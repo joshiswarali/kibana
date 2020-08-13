@@ -14,8 +14,8 @@ kibanaPipeline(timeoutMinutes: 240) {
         catchError {
 //          kibanaCoverage.runTests()
 //          kibanaTeamAssign.load('team_assignment', "### Upload Team Assignment JSON")
-//          handleIngestion(TIME_STAMP)
-          kibanaTeamAssign.generateCodeOwners('.github/CODEOWNERS', "### Generate CODEOWNERS")
+          handleIngestion(TIME_STAMP)
+//          kibanaTeamAssign.generateCodeOwners('.github/CODEOWNERS', "### Generate CODEOWNERS")
         }
         handleFail()
       }
@@ -25,6 +25,7 @@ kibanaPipeline(timeoutMinutes: 240) {
 }
 
 def handleIngestion(timestamp) {
+  kibanaCoverage.generateTeamAssignments()
   def previousSha = handlePreviousSha()
   kibanaPipeline.downloadCoverageArtifacts()
   kibanaCoverage.prokLinks("### Process HTML Links")

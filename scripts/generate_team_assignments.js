@@ -17,17 +17,5 @@
  * under the License.
  */
 
-import { readFileSync } from 'fs';
-import { resolve } from 'path';
-import { tryCatch as tc } from '../either';
-
-const ROOT = resolve(__dirname, '../../../../..');
-
-const resolveFromRoot = resolve.bind(null, ROOT);
-
-const resolved = (path) => () => resolveFromRoot(path);
-
-const getContents = (path) => tc(() => readFileSync(path, 'utf8'));
-
-// fetch :: String -> Left | Right
-export const fetch = (path) => tc(resolved(path)).chain(getContents);
+require('../src/setup_node_env');
+require('../src/dev/code_coverage/ingest_coverage/team_assignment/').generateTeamAssignments();

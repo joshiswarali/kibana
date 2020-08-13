@@ -17,5 +17,11 @@
  * under the License.
  */
 
-require('../src/setup_node_env');
-require('../src/dev/code_coverage/ingest_coverage/team_assignment').uploadTeamAssignmentJson();
+import { readFileSync } from 'fs';
+
+export const hydrate = (serializedPath) => {
+  const contents = readFileSync(serializedPath, { encoding: 'utf8' });
+  const pathsMap = new Map(JSON.parse(contents));
+
+  return pathsMap;
+};

@@ -32,6 +32,7 @@ import {
   coveredFilePath,
   ciRunUrl,
   itemizeVcs,
+  teamAssignment,
 } from './transforms';
 import { resolve } from 'path';
 import { createReadStream } from 'fs';
@@ -64,6 +65,7 @@ const transform = (jsonSummaryPath) => (log) => (vcsInfo) => {
       map(ciRunUrl),
       map(addJsonSummaryPath(jsonSummaryPath)),
       map(addTestRunnerAndStaticSiteUrl),
+      map(teamAssignment),
       concatMap((x) => of(x).pipe(delay(ms)))
     )
     .subscribe(ingest(log));

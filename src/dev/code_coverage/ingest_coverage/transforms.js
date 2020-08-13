@@ -20,6 +20,7 @@
 import * as Either from './either';
 import { fromNullable } from './maybe';
 import { always, id, noop } from './utils';
+import { hydrate } from './team_assignment/hydrate';
 
 const maybeTotal = (x) => (x === 'total' ? Either.left(x) : Either.right(x));
 
@@ -97,6 +98,14 @@ export const coveredFilePath = (obj) => {
     .fold(withoutCoveredFilePath, (coveredFilePath) => ({ ...obj, coveredFilePath }));
 };
 
+export const teamAssignment = (obj) => {
+  const { originalFilePath } = obj;
+  console.log(`\n### originalFilePath: \n\t${originalFilePath}`);
+
+  // TODO: Do team lookup here
+
+  return obj;
+};
 export const ciRunUrl = (obj) =>
   Either.fromNullable(process.env.CI_RUN_URL).fold(always(obj), (ciRunUrl) => ({
     ...obj,
