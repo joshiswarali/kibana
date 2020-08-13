@@ -98,7 +98,7 @@ export const coveredFilePath = (obj) => {
     .fold(withoutCoveredFilePath, (coveredFilePath) => ({ ...obj, coveredFilePath }));
 };
 
-export const teamAssignment = (obj) => {
+export const teamAssignment = (datFilePath) => (obj) => {
   const { originalFilePath } = obj;
   console.log(`\n### originalFilePath: \n\t${originalFilePath}`);
 

@@ -1,14 +1,3 @@
-def generateTeamAssignments(destination, title) {
-  kibanaPipeline.bash("""
-    source src/dev/ci_setup/setup_env.sh
-    yarn kbn bootstrap --prefer-offline
-
-    . packages/kbn-dev-utils/src/code_ownership/shell_scripts/generate_code_owners.sh '${destination}'
-    . src/dev/code_coverage/'${destination}'
-    cat '${destination}'
-  """, title)
-}
-
 def downloadPrevious(title) {
   def vaultSecret = 'secret/gce/elastic-bekitzur/service-account/kibana'
 
