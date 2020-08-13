@@ -18,7 +18,7 @@
  */
 
 import { run, rules, createFlagError } from '@kbn/dev-utils';
-import { parse } from './generate_assignments';
+import { gen } from './generate_assignments';
 import { pipe } from '../utils';
 import { flush } from './flush';
 
@@ -35,8 +35,8 @@ export const generateTeamAssignments = () => {
       if (flags.dest === '') throw createFlagError('please provide a single --dest flag');
 
       const flushTo = flush(flags.dest)(log);
-      const parseFlush = pipe(parse, flushTo);
-      parseFlush(rules);
+
+      pipe(gen, flushTo)(rules);
     },
     {
       description: `

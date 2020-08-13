@@ -17,14 +17,11 @@
  * under the License.
  */
 
-export const parse = (rules) => {
+export const gen = (rules) => {
   const pathsMap = new Map();
 
-  for (const { files, coverageOwner } of rules[Symbol.iterator]()) {
-    for (const file of files) {
-      pathsMap.set(file, { coverageOwner });
-    }
-  }
+  for (const { files, coverageOwner } of rules[Symbol.iterator]())
+    for (const file of files) pathsMap.set(file, { coverageOwner });
 
   return pathsMap;
 };
