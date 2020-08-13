@@ -17,21 +17,14 @@
  * under the License.
  */
 
-import { createFailError } from '@kbn/dev-utils';
-import { ES_HOST } from '../constants';
-import { pretty, green } from '../utils';
+export const parse = (rules) => {
+  const pathsMap = new Map();
 
-const { Client } = require('@elastic/elasticsearch');
-
-const node = ES_HOST;
-const client = new Client({ node });
-
-export const update = (id) => (log) => async (body) => {
-  try {
-    await client.ingest.putPipeline({ id, body });
-    log.verbose(`### Ingestion Pipeline ID: ${green(id)}`);
-    log.verbose(`### Payload Partial: \n${body.slice(0, 600)}...`);
-  } catch (e) {
-    throw createFailError(`${pretty(e.meta)}`);
+  for (const { files, coverageOwner } of rules[Symbol.iterator]()) {
+    for (const file of files) {
+      pathsMap.set(file, { coverageOwner });
+    }
   }
+
+  return pathsMap;
 };
