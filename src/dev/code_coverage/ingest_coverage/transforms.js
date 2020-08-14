@@ -19,8 +19,7 @@
 
 import * as Either from './either';
 import { fromNullable } from './maybe';
-import { always, id, noop } from './utils';
-import { hydrate } from './team_assignment/hydrate';
+import { always, id, noop, pipe } from './utils';
 
 const maybeTotal = (x) => (x === 'total' ? Either.left(x) : Either.right(x));
 
@@ -98,13 +97,53 @@ export const coveredFilePath = (obj) => {
     .fold(withoutCoveredFilePath, (coveredFilePath) => ({ ...obj, coveredFilePath }));
 };
 
-export const teamAssignment = (datFilePath) => (obj) => {
-  const { originalFilePath } = obj;
-  console.log(`\n### originalFilePath: \n\t${originalFilePath}`);
+const split = (sep) => (x) => x.split(sep);
+const splitF = split('/');
+const dropBlanks = (x) => x !== '';
+const filterBlanks = (xs) => xs.filter(dropBlanks);
+const splitAndDropBlanks = pipe(splitF, filterBlanks);
+const pathize = (acc, x) => `${acc}/${x}`;
+const pathizeTwo = (x) => {
+  const [a, b] = splitAndDropBlanks(x);
+  return () => [a, b].reduce(pathize, '');
+};
+export const teamAssignment = (teamAssignments) => (obj) => {
+  pathizeN();
 
-  // TODO: Do team lookup here
+  const { originalFilePath, COVERAGE_INGESTION_KIBANA_ROOT } = obj;
+  const trimmed = originalFilePath.replace(COVERAGE_INGESTION_KIBANA_ROOT, '');
 
-  return obj;
+  const queryRoot = pathizeTwo(trimmed);
+
+  const team = '';
+
+  // Check for:
+  // 1. Exact match
+  // 2. Partial match...root(s) match
+  // 3. Glob match
+
+  const possibles = teamAssignments.split('\n').filter((x) => {
+    const assignmentRoot = pathizeTwo(x);
+    if (assignmentRoot() == queryRoot()) return true;
+  });
+  // for (let assignment of teamAssignments.split('\n')) {
+  //   console.log(`\n### assignment: \n\t${assignment}`);
+  //
+  //   const assignmentRoot = pathizeTwo(assignment);
+  //
+  //   console.log(`\n### assignmentRoot(): \n\t${assignmentRoot()}`);
+  //   console.log(`\n### queryRoot(): \n\t${queryRoot()}`);
+  //
+  //
+  //   if (assignmentRoot() == queryRoot()) {
+  //     team = assignment.split(' ')[1]
+  //
+  //   }
+  // }
+  return {
+    team,
+    ...obj,
+  };
 };
 export const ciRunUrl = (obj) =>
   Either.fromNullable(process.env.CI_RUN_URL).fold(always(obj), (ciRunUrl) => ({

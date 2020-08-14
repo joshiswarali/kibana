@@ -20,6 +20,7 @@
 import { resolve } from 'path';
 import { prok } from './process';
 import { run, createFlagError } from '@kbn/dev-utils';
+import { getData } from './team_assignment/get_data';
 
 const ROOT = resolve(__dirname, '../../../..');
 const flags = {
@@ -44,7 +45,8 @@ export function runCoverageIngestionCli() {
       const resolveRoot = resolve.bind(null, ROOT);
       const jsonSummaryPath = resolveRoot(flags.path);
       const vcsInfoFilePath = resolveRoot(flags.vcsInfoPath);
-      prok({ jsonSummaryPath, vcsInfoFilePath, teamAssignmentsPath: flags.teamAssignments }, log);
+      const teamAssignments = getData(flags.teamAssignments);
+      prok({ jsonSummaryPath, vcsInfoFilePath, teamAssignments }, log);
     },
     {
       description: `

@@ -51,10 +51,10 @@ const addPrePopulatedTimeStamp = addTimeStamp(process.env.TIME_STAMP || formatte
 const preamble = pipe(statsAndstaticSiteUrl, rootDirAndOrigPath, buildId, addPrePopulatedTimeStamp);
 const addTestRunnerAndStaticSiteUrl = pipe(testRunner, staticSite(staticSiteUrlBase));
 
-const transform = (jsonSummaryPath) => (log) => (vcsInfo) => (teamAssignmentsPath) => {
+const transform = (jsonSummaryPath) => (log) => (vcsInfo) => (teamAssignments) => {
   const objStream = jsonStream(jsonSummaryPath).on('done', noop);
   const itemizeVcsInfo = itemizeVcs(vcsInfo);
-  const assignTeams = teamAssignment(teamAssignmentsPath);
+  const assignTeams = teamAssignment(teamAssignments);
 
   const jsonSummary$ = (_) => objStream.on('node', '!.*', _);
 
@@ -86,7 +86,7 @@ const vcsInfoLines$ = (vcsInfoFilePath) => {
   return fromEvent(rl, 'line').pipe(takeUntil(fromEvent(rl, 'close')));
 };
 
-export const prok = ({ jsonSummaryPath, vcsInfoFilePath, teamAssignmentsPath }, log) => {
+export const prok = ({ jsonSummaryPath, vcsInfoFilePath, teamAssignments }, log) => {
   validateRoot(COVERAGE_INGESTION_KIBANA_ROOT, log);
   logAll(jsonSummaryPath, log);
 
@@ -96,7 +96,7 @@ export const prok = ({ jsonSummaryPath, vcsInfoFilePath, teamAssignmentsPath }, 
   vcsInfoLines$(vcsInfoFilePath).subscribe(
     mutateVcsInfo(vcsInfo),
     (err) => log.error(err),
-    always(xformWithPath(vcsInfo)(teamAssignmentsPath))
+    always(xformWithPath(vcsInfo)(teamAssignments))
   );
 };
 

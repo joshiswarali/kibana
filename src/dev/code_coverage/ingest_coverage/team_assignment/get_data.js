@@ -19,9 +19,4 @@
 
 import { readFileSync } from 'fs';
 
-export const hydrate = (serializedPath) => {
-  const contents = readFileSync(serializedPath, { encoding: 'utf8' });
-  const pathsMap = new Map(JSON.parse(contents));
-
-  return pathsMap;
-};
+export const getData = (path) => readFileSync(path, { encoding: 'utf8' });
